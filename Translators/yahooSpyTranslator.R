@@ -1,0 +1,42 @@
+
+
+library(data.table)
+library(RMySQL)
+
+run <- function()
+{
+  
+  con <- dbConnect(MySQL(), user="carlton", password= '1234password', db='yahoo' )
+  dt.dates <- data.table(dbGetQuery(conn = con,statement = "select distinct quote_date from import_yahoo.spy"))
+  dt.dates.already.inserted <- data.table(dbGetQuery(conn = con,statement = "select distinct quote_date from yahoo.spy"))
+  
+  dt.insert.dates <- setdiff(dt.dates$quote_date, dt.dates.already.inserted$quote_date)
+  for ( i in dt.insert.dates) {
+    chr.max.timestamp <- data.table(dbGetQuery(conn = con,
+                                               statement = paste0("select max(timestamp) timestamp from import_yahoo.spy 
+                                                                  where quote_date in 
+                                                                  ( '", i, "' )")))
+    dt.yahoo <- data.table(dbGetQuery(conn = con,
+                                          statement = paste0("select * from import_yahoo.spy 
+                                                             where quote_date in 
+                                                             ( '", i, "' ) and timestamp = '",chr.max.timestamp, "'" )))
+    
+    dt.yahoo.insert <- dt.yahoo[,list(underlying_symbol=substring(contract_name,1,3),
+                                              quote_date,
+                                              expiration,
+                                              strike,
+                                              option_type=call_put,
+                                              trade_volume=volume,
+                                              bid,
+                                              ask,
+                                              underlying_ask=underlying,
+                                              implied_volatility=iv,
+                                              timestamp)]
+    
+    
+    dbWriteTable(con, value = dt.yahoo.insert, name = "spy", append = TRUE, row.names=F ) 
+  }
+  
+}
+
+

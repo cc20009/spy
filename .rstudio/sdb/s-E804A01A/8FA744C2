@@ -1,0 +1,18 @@
+{
+    "contents" : "\n\nargs<-commandArgs(TRUE)\ntest <- args[1]\nsystem(command = paste(\"logger -p local0.info \\\"\", 'hey meg', \"\\\"\"))\n\n\nx <- system(command=' tail /var/log/syslog --lines 100', intern=T)\nx2 <- data.table(x[grep('Executing',x)])\nx2[,str:=data.table(str_locate(pattern ='Executing ',V1))$end]\nx2[,script:=substring(V1, str+1)]\nx2[,str_time:=data.table(str_locate(pattern =' ip-',V1))$start]\nx2[,time:=substring(V1, 1,str_time-1)]\n#system(command=' tail /var/log/syslog --lines 100', intern=T)\n\n#system(command=' tail /var/mail/root --lines 100', intern=T)\n\n\ncon <- dbConnect(MySQL(), user=\"carlton\", password= '1234password',db='import_tradeking' )\ndbSendQuery(con, \"DELETE FROM import_yahoo.spy where hour(timestamp) < 14\")\ndbSendQuery(con, \"DELETE FROM import_tradeking.spy where hour(timestamp) < 14\")\n",
+    "created" : 1446832568674.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "4050751543",
+    "id" : "8FA744C2",
+    "lastKnownWriteTime" : 1448288391,
+    "path" : "~/Scrapers/Test.R",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled6"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

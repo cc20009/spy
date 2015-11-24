@@ -1,0 +1,36 @@
+
+
+
+div.login { 
+  text-align: left;
+  font-weight:bold;
+  padding-left:2px;
+  font-size: 12px;
+  clear: right;
+} 
+
+div#pass {
+  text-align: left;
+  font-weight:bold;
+  padding-left:2px;
+}
+
+input#Password {
+  -webkit-text-security: disc;
+}
+
+body {
+  margin:1cm;
+  font-size: 12px;
+}
+
+.shiny-output-error {
+  visibility: hidden;
+}
+
+
+tfoot {
+    display: table-header-group;
+}
+
+
